@@ -1,3 +1,2 @@
-[x] Walk the dog
 [x] Buy milk
 [x] Do homework

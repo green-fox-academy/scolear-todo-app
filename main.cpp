@@ -2,14 +2,17 @@
 #include <fstream>
 #include <vector>
 
+// Main functionalities:
 void printUsage();
 void listTasks();
 void addTask(std::string taskToAdd);
+void removeTask(int taskNum);
+void checkTask(int taskNum);
+
+// Auxiliary functions:
 int countLines(std::string fileName);
 std::vector<std::string> getRemainingLines(const std::string& fileName, int taskNum);
 void removeLine(const std::string& fileName, int taskNum);
-void removeTask(int taskNum);
-void checkTask(int taskNum);
 void writeLinesToFile(std::vector<std::string> lines, std::string fileName);
 
 
@@ -125,7 +128,7 @@ void removeLine(const std::string& fileName, int taskNum){
 void removeTask(int taskNum) {
     std::string fileName = "../tasks.txt";
     int lineCount = countLines(fileName);
-    if (taskNum > lineCount) {
+    if (taskNum > lineCount || taskNum < 1) {
         std::cout << "Unable to remove: index is out of bounds" << std::endl;
     } else {
         removeLine(fileName, taskNum);
