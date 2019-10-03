@@ -20,7 +20,6 @@ int main(int argc, char* argv[]) {
     if (argc == 1) {
         printUsage();
     } else {
-
         if (firstArgument == "-l" ) {
             listTasks();
         } else if (firstArgument == "-a") {
@@ -45,7 +44,6 @@ int main(int argc, char* argv[]) {
             std::cout << "Unsupported argument" << std::endl;
         }
     }
-
     return 0;
 }
 
@@ -118,7 +116,6 @@ void writeLinesToFile(std::vector<std::string> lines, std::string fileName) {
     }
     outputFile.close();
 }
-
 
 void removeLine(const std::string& fileName, int taskNum){
     std::vector<std::string> lines = getRemainingLines(fileName, taskNum);
