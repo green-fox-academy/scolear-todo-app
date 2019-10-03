@@ -6,7 +6,11 @@ void printUsage();
 void listTasks();
 void addTask(std::string taskToAdd);
 int countLines(std::string fileName);
+std::vector<std::string> getRemainingLines(const std::string& fileName, int taskNum);
+void removeLine(const std::string& fileName, int taskNum);
 void removeTask(int taskNum);
+void checkTask(int taskNum);
+void writeLinesToFile(std::vector<std::string> lines, std::string fileName);
 
 
 int main(int argc, char* argv[]) {
@@ -31,9 +35,15 @@ int main(int argc, char* argv[]) {
             } else {
                 removeTask(std::stoi(argv[2]));
             }
+        } else if (firstArgument == "-c") {
+            if (argc != 3) {
+                std::cout << "Unable to check: no index provided" << std::endl;
+            } else {
+                checkTask(std::stoi(argv[2]));
+            }
+        } else {
+            std::cout << "Unsupported argument" << std::endl;
         }
-
-
     }
 
     return 0;
@@ -70,7 +80,7 @@ void listTasks() {
 
 void addTask(std::string taskToAdd) {
     std::ofstream outputFile("../tasks.txt", std::ios_base::app);
-    outputFile << taskToAdd << std::endl;
+    outputFile << "[ ] " << taskToAdd << std::endl;
 }
 
 int countLines(std::string fileName) {
@@ -84,30 +94,62 @@ int countLines(std::string fileName) {
     return count;
 }
 
+std::vector<std::string> getRemainingLines(const std::string& fileName, int taskNum) {
+    std::vector<std::string> lines;
+    std::ifstream inputFile(fileName);
+    std::string line;
+    int index = 1;
+    while (getline(inputFile, line)) {
+        if (taskNum == index) {
+            index++;
+        } else {
+            lines.push_back(line);
+            index++;
+        }
+    }
+    inputFile.close();
+    return lines;
+}
+
+void writeLinesToFile(std::vector<std::string> lines, std::string fileName) {
+    std::ofstream outputFile(fileName);
+    for (const std::string& l : lines) {
+        outputFile << l << std::endl;
+    }
+    outputFile.close();
+}
+
+
+void removeLine(const std::string& fileName, int taskNum){
+    std::vector<std::string> lines = getRemainingLines(fileName, taskNum);
+    writeLinesToFile(lines, fileName);
+}
+
 void removeTask(int taskNum) {
     std::string fileName = "../tasks.txt";
     int lineCount = countLines(fileName);
     if (taskNum > lineCount) {
         std::cout << "Unable to remove: index is out of bounds" << std::endl;
     } else {
+        removeLine(fileName, taskNum);
+    }
+}
+
+void checkTask(int taskNum) {
+    std::string fileName = "../tasks.txt";
+    int lineCount = countLines(fileName);
+    if (taskNum > lineCount) {
+        std::cout << "Unable to check: index is out of bounds" << std::endl;
+    } else {
         std::vector<std::string> lines;
         std::ifstream inputFile(fileName);
         std::string line;
-        int index = 1;
         while (getline(inputFile, line)) {
-            if (taskNum == index) {
-                index++;
-            } else {
-                lines.push_back(line);
-                index++;
-            }
+            lines.push_back(line);
         }
         inputFile.close();
+        lines[taskNum - 1].replace(1, 1, "x");
 
-        std::ofstream outputFile(fileName);
-        for (const std::string& l : lines) {
-            outputFile << l << std::endl;
-        }
-        outputFile.close();
+        writeLinesToFile(lines, fileName);
     }
 }
