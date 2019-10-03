@@ -148,6 +148,7 @@ void checkTask(int taskNum) {
             lines.push_back(line);
         }
         inputFile.close();
+
         lines[taskNum - 1].replace(1, 1, "x");
 
         writeLinesToFile(lines, fileName);
